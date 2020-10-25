@@ -2,19 +2,30 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+
+  # common setting
   config.vm.box = "bento/centos-7.7"
   config.vm.box_check_update = false
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
+  # configure resources
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "512"
     vb.cpus = 1
   end
 
+  # setup private ip address
+  config.vm.network "private_network", ip: "192.168.33.10"
+
+  # install utility common package
+  config.vm.provision "shell", inline: <<-SHELL
+    yum -y install bash-completion bash-completion-extras
+  SHELL
+
   # disable swap
   config.vm.provision "shell", inline: <<-SHELL
     swapoff -a
-    sed -i '/swap/d' /etc/fstab > /etc/fstab
+    sed -i '/swap/d' /etc/fstab
   SHELL
 
   # install postgres and create symlink
