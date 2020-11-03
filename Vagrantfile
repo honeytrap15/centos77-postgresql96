@@ -42,4 +42,9 @@ Vagrant.configure("2") do |config|
     systemctl enable postgresql-9.6.service
   SHELL
 
+  # change auth config
+  config.vm.provision "shell", inline: <<-SHELL
+    sed -i "s/ident$/md5/" /var/lib/pgsql/9.6/data/pg_hba.conf
+  SHELL
+
 end
